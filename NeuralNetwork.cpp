@@ -4,87 +4,82 @@
 //
 //  Created by Ziad Amerr on 04/12/2022.
 //
-
-#include <stdio.h>
 #include <iostream>
-#include <list>
 #include <vector>
 using namespace std;
 
-class Arrow {
-public:
-    Arrow(int nextNeuronId, double weight=0) {
-        this->nextNeuronId = nextNeuronId;
-        this->weight = weight;
-    }
-    
-    void setWeight(double w) {
-        weight = w;
-    }
-    
-    double getWeight() {
-        return weight;
-    }
-    
-    int getNextNeuronId() {
-        return nextNeuronId;
-    }
-
-private:
-    int nextNeuronId;
-    double weight;
-};
-
-
-class Neuron {
-public:
-    Neuron() {
-        neuronId = 0;
-        layerId = 0;
-        activation = 0;
-    }
-    
-    Neuron(int neuronId, int layerId) {
-        this->neuronId = neuronId;
-        this->layerId = layerId;
-        this->activation = 0;
-    }
-    
-    ~Neuron() {}
-    
-    int getNeuronId() {
-        return neuronId;
-    }
-    
-    vector<Arrow> getArrowList() {
-        return arrowList;
-    }
-    
-    void addArrow(int nextNeuronId) {
-        Arrow myArrow = Arrow(nextNeuronId, 0);
-        arrowList.push_back(myArrow);
-    }
-    
-    void printArrowList() {
-        cout << '[';
-        for(auto it = arrowList.begin(); it != arrowList.end(); it++)
-            cout << it->getNextNeuronId() << '(' << it->getWeight() <<"), ";
-        cout << ']' << endl;
-    }
-    
-    int getLayerId() {
-        return layerId;
-    }
-
-private:
-    int neuronId, layerId;
-    double activation;
-    vector<Arrow> arrowList;
-};
-
-
 class NeuralNetwork {
 private:
+    class Arrow {
+    public:
+        Arrow(int nextNeuronId, double weight=0) {
+            this->nextNeuronId = nextNeuronId;
+            this->weight = weight;
+        }
+        
+        void setWeight(double w) {
+            weight = w;
+        }
+        
+        double getWeight() {
+            return weight;
+        }
+        
+        int getNextNeuronId() {
+            return nextNeuronId;
+        }
+
+    private:
+        int nextNeuronId;
+        double weight;
+    };
+    
+    class Neuron {
+    public:
+        Neuron() {
+            neuronId = 0;
+            layerId = 0;
+            activation = 0;
+        }
+        
+        Neuron(int neuronId, int layerId) {
+            this->neuronId = neuronId;
+            this->layerId = layerId;
+            this->activation = 0;
+        }
+        
+        ~Neuron() {}
+        
+        int getNeuronId() {
+            return neuronId;
+        }
+        
+        vector<Arrow> getArrowList() {
+            return arrowList;
+        }
+        
+        void addArrow(int nextNeuronId) {
+            Arrow myArrow = Arrow(nextNeuronId, 0);
+            arrowList.push_back(myArrow);
+        }
+        
+        void printArrowList() {
+            cout << '[';
+            for(auto it = arrowList.begin(); it != arrowList.end(); it++)
+                cout << "N#" << it->getNextNeuronId() << '(' << it->getWeight() <<"), ";
+            cout << ']' << endl;
+        }
+        
+        int getLayerId() {
+            return layerId;
+        }
+
+    private:
+        int neuronId, layerId;
+        double activation;
+        vector<Arrow> arrowList;
+    };
+    
     vector<vector<Neuron>> neurons;
     
     bool _checkIfNeuronExists(int neuronId, int layerIdx) {
@@ -99,7 +94,7 @@ private:
     Neuron _getNeuron(int neuronId, int layerIdx) {
         Neuron n;
         for (int i = 0; i < neurons.size(); i++) {
-            n = neurons.at(layerIdx).at(i); // ********************************************************************************
+            n = neurons.at(layerIdx).at(i);
             if (n.getNeuronId() == neuronId)
                 return n;
         }
@@ -130,9 +125,6 @@ private:
         }
     };
     
-    
-    // void _initializeWeights();
-    
 public:
     NeuralNetwork(vector<int> neuronsPerLayer) {
         for(int i=0; i<neuronsPerLayer.size(); i++)
@@ -155,9 +147,12 @@ public:
         }
     }
     
-//    void loadWeights() {
-//        float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-//    }
+    // Prints summary of the network, n_layers, n_neurons per layer
+    // void printSummary();
     
-//    void infer(Image image);
+    // Load pretrained model from JSON file
+    // void loadWeightsFromFile(JSONFile file);
+    
+    // Infer model on image and produce output, returns the most confident integer
+    // int infer(Image img);
 };

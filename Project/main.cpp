@@ -11,10 +11,9 @@ using namespace std;
 
 int main(int argc, const char * argv[]) {
     vector<int> NeuralNetworkParams = {
-        10,
-        8,
+        28,
         4,
-        1,
+        4,
         1
     };
     
