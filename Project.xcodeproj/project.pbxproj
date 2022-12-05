@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		99A3B330293E03A40084A4C8 /* NeuralNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99A3B32E293E03A40084A4C8 /* NeuralNetwork.cpp */; };
 		99B36FDD293C8D65003DF1FE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99B36FDC293C8D65003DF1FE /* main.cpp */; };
-		99B36FE7293C8DFE003DF1FE /* NeuralNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99B36FE6293C8DFE003DF1FE /* NeuralNetwork.cpp */; };
+		99B36FE7293C8DFE003DF1FE /* x.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99B36FE6293C8DFE003DF1FE /* x.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,9 +25,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		99A3B32E293E03A40084A4C8 /* NeuralNetwork.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeuralNetwork.cpp; sourceTree = "<group>"; };
+		99A3B32F293E03A40084A4C8 /* NeuralNetwork.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NeuralNetwork.hpp; sourceTree = "<group>"; };
 		99B36FD9293C8D65003DF1FE /* Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Project; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B36FDC293C8D65003DF1FE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		99B36FE6293C8DFE003DF1FE /* NeuralNetwork.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeuralNetwork.cpp; sourceTree = "<group>"; };
+		99B36FE6293C8DFE003DF1FE /* x.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,7 +46,9 @@
 		99B36FD0293C8D65003DF1FE = {
 			isa = PBXGroup;
 			children = (
-				99B36FE6293C8DFE003DF1FE /* NeuralNetwork.cpp */,
+				99A3B32E293E03A40084A4C8 /* NeuralNetwork.cpp */,
+				99A3B32F293E03A40084A4C8 /* NeuralNetwork.hpp */,
+				99B36FE6293C8DFE003DF1FE /* x.cpp */,
 				99B36FDB293C8D65003DF1FE /* Project */,
 				99B36FDA293C8D65003DF1FE /* Products */,
 			);
@@ -123,7 +128,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				99B36FDD293C8D65003DF1FE /* main.cpp in Sources */,
-				99B36FE7293C8DFE003DF1FE /* NeuralNetwork.cpp in Sources */,
+				99B36FE7293C8DFE003DF1FE /* x.cpp in Sources */,
+				99A3B330293E03A40084A4C8 /* NeuralNetwork.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,20 +6,23 @@
 //
 
 #include <iostream>
-#include "../NeuralNetwork.cpp"
+//#include "../NeuralNetwork.cpp"
+//#include "../Activations.cpp"
+#include "NeuralNetwork.hpp"
 using namespace std;
 
 int main(int argc, const char * argv[]) {
     vector<int> NeuralNetworkParams = {
-        28,
-        4,
-        4,
-        1
+        16,
+        8,
+        4
     };
     
     NeuralNetwork myNetwork = NeuralNetwork(NeuralNetworkParams);
     
-    myNetwork.printNetwork();
+    myNetwork.printNetwork("detailed");
+    
+    //cout << NeuralNetwork::Activations::Sigmoid(0.5) << endl;
     
     return 0;
 }
