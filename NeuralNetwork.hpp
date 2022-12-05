@@ -137,10 +137,7 @@ public:
     
     void printNetwork(string detailed = "undetailed");
     
-    
-    // ************************* PHASE 2 *************************
-    // Prints summary of the network, n_layers, n_neurons per layer
-    // void printSummary();
+    void printSummary();
     
     // ************************* PHASE 2 *************************
     // Load pretrained model from JSON file

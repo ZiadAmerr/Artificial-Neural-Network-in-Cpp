@@ -13,16 +13,13 @@ using namespace std;
 
 int main(int argc, const char * argv[]) {
     vector<int> NeuralNetworkParams = {
+        28,
         16,
-        8,
-        4
+        16,
+        10
     };
     
     NeuralNetwork myNetwork = NeuralNetwork(NeuralNetworkParams);
-    
-    myNetwork.printNetwork("detailed");
-    
-    //cout << NeuralNetwork::Activations::Sigmoid(0.5) << endl;
     
     return 0;
 }

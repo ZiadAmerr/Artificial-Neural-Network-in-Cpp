@@ -87,9 +87,11 @@ void NeuralNetwork::printNetwork(string detailed) {
 }
 
 
-// ************************* PHASE 2 *************************
-// Prints summary of the network, n_layers, n_neurons per layer
-// void printSummary();
+void NeuralNetwork::printSummary() {
+    for(int layerIdx=0; layerIdx<neurons.size(); layerIdx++) {
+        cout << "Layer " << layerIdx << " has " << neurons.at(layerIdx).size() << " neurons." << endl;
+    }
+};
 
 // ************************* PHASE 2 *************************
 // Load pretrained model from JSON file
