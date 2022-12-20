@@ -6,20 +6,29 @@
 //
 
 #include <iostream>
-//#include "../NeuralNetwork.cpp"
-//#include "../Activations.cpp"
-#include "NeuralNetwork.hpp"
+#include "../NeuralNetworkCppOnly.cpp"
+
+
 using namespace std;
+
+double _dot(vector<double> weights, vector<double> activations) {
+    double activation = 0;
+    for(int i=0; i<weights.size(); i++)
+        activation += weights.at(i)*activations.at(i);
+    
+    return activation;
+}
 
 int main(int argc, const char * argv[]) {
     vector<int> NeuralNetworkParams = {
-        28,
-        16,
-        16,
-        10
+        20,
+        10,
+        5,
+        1
     };
     
     NeuralNetwork myNetwork = NeuralNetwork(NeuralNetworkParams);
     
+    myNetwork.printNetwork("backward");
     return 0;
 }
