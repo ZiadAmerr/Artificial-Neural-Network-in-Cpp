@@ -6,8 +6,8 @@
 //
 #include <iostream>
 #include <vector>
+#include <math.h>
 using namespace std;
-
 class NeuralNetwork {
 private:
     class Neuron {
@@ -18,19 +18,15 @@ private:
                 this->nextNeuronId = nextNeuronId;
                 this->weight = weight;
             }
-            
             void setWeight(double w) {
                 weight = w;
             }
-            
             double getWeight() {
                 return weight;
             }
-            
             int getNextNeuronId() {
                 return nextNeuronId;
             }
-            
         private:
             int nextNeuronId;
             double weight;
@@ -89,14 +85,15 @@ private:
         int getLayerId() {
             return layerId;
         }
+        void setActivation(double activation) {
+            this->activation = activation;
+        }
     };
-    
     vector<vector<Neuron>> neurons;
-    
-    double _calcActivation(Neuron myNeuron) {
+    void _calcActivation(Neuron myNeuron, function<double(double)> activationFunction) {
         if(myNeuron.getLayerId() == 0) {
             cerr << "ERROR DO NOT TRY TO CALC ACTIVATION OF NEURON IN FIRST LAYER" << endl;
-            return 0;
+            return;
         }
         
         // Our vectors
@@ -113,10 +110,12 @@ private:
             previousActivations.push_back(neurons.at(currentLayerId-1).at(i).getActivation());
         }
         
+        double z = _dot(weights, previousActivations);
         
-        return _dot(weights, previousActivations);
+        z = activationFunction(z);
+        
+        myNeuron.setActivation(z);
     }
-    
     double _dot(vector<double> weights, vector<double> activations) {
         double activation = 0;
         for(int i=0; i<weights.size(); i++)
@@ -124,15 +123,18 @@ private:
         
         return activation;
     }
-    
-//        vector<double> layerActivation(vector<Neuron> neurons) {
-//            for neuron in neurons:
-//                neuron.activation = getActivation(neuron)
-//        }
+//     vector<double> layerActivation(vector<Neuron> neurons) {
+//        for neuron in neurons:
+//            neuron.activation = getActivation(neuron)
+//    }
 //
-//        for i in range(4):
-//            layerActivation()
-    
+//    for i in range(4):
+//        layerActivation()
+    void _computeLayerActivation(int layerIdx, function<double(double)> activationFunction) {
+        Neuron myNeuron;
+        for(int i=0; i<neurons.at(layerIdx).size(); i++)
+            _calcActivation(neurons.at(layerIdx).at(i), activationFunction);
+    };
     bool _checkIfNeuronExists(int neuronId, int layerIdx) {
         for(int i = 0; i<neurons.size(); i++)
             if(neurons.at(layerIdx).at(i).getNeuronId() == neuronId)
@@ -183,7 +185,53 @@ private:
             };
         };
     };
-    
+    void _initializeModel(vector<double> flattenedImage) {
+        if(flattenedImage.size() != neurons.at(0).size()) {
+            cerr << "FLATTENED IMAGE SIZE SHOULD BE EQUAL TO NUMBER OF NEURONS IN FIRST LAYER" << endl;
+            cerr << "SHAPES " << flattenedImage.size() << " AND " << neurons.at(0).size() << " DO NOT MATCH" << endl;
+            exit(1);
+            return;
+        }
+        for(int i=0; i<neurons.at(0).size(); i++)
+            neurons.at(0).at(i).setActivation(flattenedImage.at(i));
+    }
+    static double _relu(double x) {
+        if(x > 0)
+            return x;
+        else
+            return 0;
+    }
+    void _computeLastLayer() {
+        vector<double> lastActivations;
+        int indexOfLastLayer = int(neurons.size()-1);
+        for(int i=0; i<neurons.at(indexOfLastLayer).size(); i++) {
+            lastActivations.push_back(neurons.at(indexOfLastLayer).at(i).getActivation());
+        }
+        
+        vector<double> finalActivations = _softmax(lastActivations);
+        _printVector(finalActivations);
+        for(int i=0; i<finalActivations.size(); i++)
+            neurons.at(indexOfLastLayer).at(i).setActivation(finalActivations.at(i));
+    }
+    vector<double> _softmax(vector<double> a) {
+        double exp_sum = 0;
+        for(int i=0; i<a.size(); i++) {
+            exp_sum += exp(a.at(i));
+        }
+        vector<double> activations;
+        for(int i=0; i<a.size(); i++) {
+            activations.push_back(exp(a.at(i))/exp_sum);
+        }
+        return activations;
+    }
+    void _printVector(vector<double> v) {
+        for(int i=0; i<v.size(); i++)
+            cout << v.at(i) << " ";
+        cout << endl;
+    }
+    static double _same(double x) {
+        return x;
+    }
 public:
     NeuralNetwork(vector<int> neuronsPerLayer) {
         for(int i=0; i<neuronsPerLayer.size(); i++)
@@ -194,7 +242,6 @@ public:
         }
             
     }
-    
     void printNetwork(string detailed="none") {
         Neuron n;
         for(int i=0; i<neurons.size(); i++) {
@@ -224,8 +271,6 @@ public:
             cout << endl;
         }
     }
-    
-    // Prints summary of the network, n_layers, n_neurons per layer
     void printSummary() {
         for(int layerIdx=0; layerIdx<neurons.size(); layerIdx++) {
             cout << "Layer " << layerIdx << " has " << neurons.at(layerIdx).size() << " neurons." << endl;
@@ -233,10 +278,27 @@ public:
     };
     
     // ************************* PHASE 2 *************************
+    int predict(vector<vector<double>> image) {
+        vector<double> flattenedImage;
+        for(int i=0; i<image.size(); i++)
+            for(int j=0; j<image.at(i).size(); j++)
+                flattenedImage.push_back(image.at(i).at(j));
+        
+        _initializeModel(flattenedImage);
+        
+        for(int i=1; i<neurons.size()-1; i++) {
+            _computeLayerActivation(i, _relu);
+        }
+        _computeLayerActivation(int(neurons.size()-1), _same);
+        _computeLastLayer();
+        
+        // GET ARGMAX AND RETURN IT AS INTEGER ***************
+        
+        return 0;
+    }
+    
+    // ************************* PHASE 2 *************************
     // Load pretrained model from JSON file
     // void loadWeightsFromFile(JSONFile file);
 
-    // ************************* PHASE 2 *************************
-    // Infer model on image and produce output, returns the most confident integer
-    // int infer(Image img);
 };
