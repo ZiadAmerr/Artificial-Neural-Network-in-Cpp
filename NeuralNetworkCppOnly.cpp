@@ -326,25 +326,7 @@ public:
         } else {
             perror(path);
         };
-        for(int i=0; i<fileAsString.size(); i++) {
-            cout << i << ": " << fileAsString.at(i) << endl;
-        }
         return fileAsString;
     };
-    void split (string str, char seperator, string myList[]) {
-        int currIndex = 0, i = 0;
-        int startIndex = 0, endIndex = 0;
-        string subStr;
-        while (i <= str.length()) {
-            if (str[i] == seperator || i == str.length()) {
-                endIndex = i;
-                subStr = "";
-                subStr.append(str, startIndex, endIndex - startIndex);
-                myList[currIndex] = subStr;
-                currIndex += 1;
-                startIndex = endIndex + 1;
-            }
-            i++;
-        }
-    }
+    
 };
