@@ -28,7 +28,7 @@
 /* Begin PBXFileReference section */
 		995FFC882950FE31009D57AB /* NeuralNetworkCppOnly.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeuralNetworkCppOnly.cpp; sourceTree = "<group>"; };
 		99A3B32E293E03A40084A4C8 /* n.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = n.cpp; sourceTree = "<group>"; };
-		99A3B32F293E03A40084A4C8 /* n.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = n.hpp; sourceTree = "<group>"; };
+		99A3B32F293E03A40084A4C8 /* x.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = x.hpp; sourceTree = "<group>"; };
 		99B36FD9293C8D65003DF1FE /* Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Project; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B36FDC293C8D65003DF1FE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		99B36FE6293C8DFE003DF1FE /* x.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x.cpp; sourceTree = "<group>"; };
@@ -53,7 +53,7 @@
 			children = (
 				99A3B32E293E03A40084A4C8 /* n.cpp */,
 				995FFC882950FE31009D57AB /* NeuralNetworkCppOnly.cpp */,
-				99A3B32F293E03A40084A4C8 /* n.hpp */,
+				99A3B32F293E03A40084A4C8 /* x.hpp */,
 				99B36FE6293C8DFE003DF1FE /* x.cpp */,
 				99B36FDB293C8D65003DF1FE /* Project */,
 				99B36FDA293C8D65003DF1FE /* Products */,
