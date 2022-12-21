@@ -6,7 +6,9 @@
 //
 #include <iostream>
 #include <vector>
+#include <fstream>
 #include <math.h>
+#include <filesystem>
 using namespace std;
 class NeuralNetwork {
 private:
@@ -234,6 +236,10 @@ private:
     }
 public:
     NeuralNetwork(vector<int> neuronsPerLayer) {
+        if(neuronsPerLayer.size() < 3) {
+            cerr << "Error! The designed neural network has to have at least 3 layers";
+            exit(1);
+        }
         for(int i=0; i<neuronsPerLayer.size(); i++)
             _initializeLayer(neuronsPerLayer.at(i), i);
         
@@ -301,4 +307,44 @@ public:
     // Load pretrained model from JSON file
     // void loadWeightsFromFile(JSONFile file);
 
+    // ************************* PHASE 2 *************************
+    // Load pretrained model from JSON file
+    vector<string> loadWeightsFromFile(const char* path) {
+        // Open file from path
+        ifstream myFile(path);
+        
+        vector<string> fileAsString;
+        string line;
+        
+        if(myFile) {
+            while(true) {
+                myFile >> line;
+                if(myFile.eof())
+                    break;
+                fileAsString.push_back(line);
+            };
+        } else {
+            perror(path);
+        };
+        for(int i=0; i<fileAsString.size(); i++) {
+            cout << i << ": " << fileAsString.at(i) << endl;
+        }
+        return fileAsString;
+    };
+    void split (string str, char seperator) {
+        string strings[1024];
+        int currIndex = 0, i = 0;
+        int startIndex = 0, endIndex = 0;
+        while (i <= str.length()) {
+            if (str[i] == seperator || i == str.length()) {
+                endIndex = i;
+                string subStr = "";
+                subStr.append(str, startIndex, endIndex - startIndex);
+                strings[currIndex] = subStr;
+                currIndex += 1;
+                startIndex = endIndex + 1;
+            }
+            i++;
+            }
+    }
 };
