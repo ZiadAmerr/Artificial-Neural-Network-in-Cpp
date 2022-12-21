@@ -29,24 +29,26 @@ int main(int argc, const char * argv[]) {
     };
     
     // Initialize network
-    vector<int> NeuralNetworkParams = {28*28, 16, 16, 10};
+    vector<int> NeuralNetworkParams = {8, 4, 2, 1};
     
     // Construct the network from the defined parameters
     NeuralNetwork myNetwork = NeuralNetwork(NeuralNetworkParams);
+    
+    // Verify the network
+    myNetwork.printNetwork("backward");
     
     // Load pretrained model (weights)
     // myNetwork.loadPretrainedModel("Project/model.model");
     
     // Predict image
-    myNetwork.predict(image);
+    // myNetwork.predict(image);
     
     // Get the 2D vector of activations
     // vector<vector<double>> activations = myNetwork.getActivations();
     
     
     
-    // vector<string> fileAsStr = myNetwork.loadWeightsFromFile("Project/weights.weights");
-    // myNetwork.printNetwork("backward");
+    vector<string> fileAsStr = myNetwork.loadWeightsFromFile("Project/weights2to3.weights");
     
     
     
