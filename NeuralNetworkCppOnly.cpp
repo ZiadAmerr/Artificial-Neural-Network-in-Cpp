@@ -36,7 +36,6 @@ private:
         int neuronId, layerId;
         double activation;
         // ************************* PHASE 2 *************************
-        vector<Arrow> forwardArrowList;
         vector<Arrow> backwardArrowList;
         
         
@@ -58,9 +57,6 @@ private:
         double getActivation() {
             return activation;
         }
-        vector<Arrow> getForwardArrowList() {
-            return forwardArrowList;
-        }
         vector<Arrow> getBackwardArrowList() {
             return backwardArrowList;
         }
@@ -71,17 +67,13 @@ private:
             }
             return weights;
         }
-        void addForwardArrow(int nextNeuronId) {
-            forwardArrowList.push_back(Arrow(nextNeuronId, 0));
-        }
         void addBackwardArrow(int prevNeuronId) {
             backwardArrowList.push_back(Arrow(prevNeuronId, 0));
         }
         void printArrowList(string direction="forward") {
-            vector<Arrow> arrowList = (direction == "forward") ? forwardArrowList : backwardArrowList;
             cout << '[';
-            for(auto it = arrowList.begin(); it != arrowList.end(); it++)
-                cout << "N#" << it->getNextNeuronId() << ", ";  // << "(" << it->getWeight() <<")
+            for(auto it = backwardArrowList.begin(); it != backwardArrowList.end(); it++)
+                cout << "N#" << it->getNextNeuronId() << "(" << it->getWeight() <<"), ";
             cout << ']';
         }
         int getLayerId() {
@@ -90,11 +82,21 @@ private:
         void setActivation(double activation) {
             this->activation = activation;
         }
+        // ********* UNFINISHED *********
+        void setWeights(vector<double> weights) {
+            if(weights.size() != backwardArrowList.size()) {
+                cerr << "CAN NOT USE WEIGHTS FOR NEURON, DIM MISMATCH.";
+                exit(1);
+            }
+            for(int i=0; i<weights.size(); i++)
+                backwardArrowList.at(i).setWeight(weights.at(i));
+        }
     };
     vector<vector<Neuron>> neurons;
     void _calcActivation(Neuron myNeuron, function<double(double)> activationFunction) {
         if(myNeuron.getLayerId() == 0) {
             cerr << "ERROR DO NOT TRY TO CALC ACTIVATION OF NEURON IN FIRST LAYER" << endl;
+            exit(1);
             return;
         }
         
@@ -234,6 +236,60 @@ private:
     static double _same(double x) {
         return x;
     }
+    vector<string> _loadWeightsFromFile(const char* path) {
+        // Open file from path
+        ifstream myFile(path);
+        
+        vector<string> fileAsString;
+        string line;
+        
+        if(myFile) {
+            while(true) {
+                myFile >> line;
+                if(myFile.eof())
+                    break;
+                fileAsString.push_back(line);
+            };
+        } else {
+            perror(path);
+        };
+        return fileAsString;
+    };
+    vector<double> _strToDouble(vector<string> v) {
+        vector<double> doubleVector(v.size());
+        transform(v.begin(), v.end(), doubleVector.begin(), [] (const string& val) {
+            return stod(val);
+        });
+        return doubleVector;
+    }
+    vector<vector<double>> _reshape(int dim, vector<double> v) {
+        vector<vector<double>> myVec;
+        vector<double> temp;
+        for(int i=1; i<=v.size(); i++) {
+            temp.push_back(v.at(i-1));
+            if(i%dim == 0) {
+                myVec.push_back(temp);
+                temp.clear();
+            };
+        };
+        return myVec;
+    };
+    vector<vector<double>> _getWeightsMatrix(const char* path, int dim) {
+        vector<double> weightsVector = _strToDouble(_loadWeightsFromFile(path));
+        return _reshape(dim, weightsVector);
+    };
+    void _setLayerWeights(vector<vector<double>> W, int layerIdx) {
+        int n_neurons = int(neurons.at(layerIdx).size());
+        if(n_neurons != W.size()) {
+            cerr << "DIMENSION MISMATCH! N NEURONS DIFFERENT THAN WEIGHTS MATRIX" << endl;
+            cout << "N neurons = " << n_neurons << "\nW size = " << W.size() << endl;
+            exit(1);
+        }
+        for(int i=0; i<n_neurons; i++) {
+            neurons.at(layerIdx).at(i).setWeights(W.at(i));
+        }
+    }
+    
 public:
     NeuralNetwork(vector<int> neuronsPerLayer) {
         if(neuronsPerLayer.size() < 3) {
@@ -303,30 +359,20 @@ public:
         return 0;
     }
     
-    // ************************* PHASE 2 *************************
-    // Load pretrained model from JSON file
-    // void loadWeightsFromFile(JSONFile file);
-
-    // ************************* PHASE 2 *************************
-    // Load pretrained model from JSON file
-    vector<string> loadWeightsFromFile(const char* path) {
-        // Open file from path
-        ifstream myFile(path);
+    
+    
+    
+    void loadPretrainedModel(string stringPath) {
+        string path_temp;
+        const char* path;
+        // getWeightsMatrix("Project/pretrainedModel/weights1.weights", NeuralNetworkParams.at(0));
+        for(int i=1; i<neurons.size(); i++) {
+            path_temp = stringPath + "weights" + to_string(i) + ".weights";
+            path = path_temp.c_str();
+            vector<vector<double>> W = _getWeightsMatrix(path, int(neurons.at(i-1).size()));
+            _setLayerWeights(W, i);
+        }
         
-        vector<string> fileAsString;
-        string line;
-        
-        if(myFile) {
-            while(true) {
-                myFile >> line;
-                if(myFile.eof())
-                    break;
-                fileAsString.push_back(line);
-            };
-        } else {
-            perror(path);
-        };
-        return fileAsString;
     };
     
 };
