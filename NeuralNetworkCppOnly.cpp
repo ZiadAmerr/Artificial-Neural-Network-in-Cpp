@@ -37,8 +37,6 @@ private:
         double activation;
         // ************************* PHASE 2 *************************
         vector<Arrow> backwardArrowList;
-        
-        
     public:
         Neuron() {
             neuronId = 0;
@@ -93,33 +91,8 @@ private:
         }
     };
     vector<vector<Neuron>> neurons;
-    void _calcActivation(Neuron myNeuron, function<double(double)> activationFunction) {
-        if(myNeuron.getLayerId() == 0) {
-            cerr << "ERROR DO NOT TRY TO CALC ACTIVATION OF NEURON IN FIRST LAYER" << endl;
-            exit(1);
-            return;
-        }
-        
-        // Our vectors
-        vector<double> weights;
-        vector<double> previousActivations;
-        int currentLayerId = myNeuron.getLayerId();
-        
-        
-        
-        weights = myNeuron.getConnectedWeights();
-        
-        // Let's loop through all neurons in the PREVIOUS layer
-        for(int i=0; i<neurons.at(currentLayerId-1).size(); i++) {
-            previousActivations.push_back(neurons.at(currentLayerId-1).at(i).getActivation());
-        }
-        
-        double z = _dot(weights, previousActivations);
-        
-        z = activationFunction(z);
-        
-        myNeuron.setActivation(z);
-    }
+    
+    
     double _dot(vector<double> weights, vector<double> activations) {
         double activation = 0;
         for(int i=0; i<weights.size(); i++)
@@ -134,11 +107,7 @@ private:
 //
 //    for i in range(4):
 //        layerActivation()
-    void _computeLayerActivation(int layerIdx, function<double(double)> activationFunction) {
-        Neuron myNeuron;
-        for(int i=0; i<neurons.at(layerIdx).size(); i++)
-            _calcActivation(neurons.at(layerIdx).at(i), activationFunction);
-    };
+    
     bool _checkIfNeuronExists(int neuronId, int layerIdx) {
         for(int i = 0; i<neurons.size(); i++)
             if(neurons.at(layerIdx).at(i).getNeuronId() == neuronId)
@@ -156,8 +125,8 @@ private:
         }
         
         // If not found
-        cout << "Error! Neuron not found!" << endl;
-        return n;
+        cerr << "Error! Neuron not found!" << endl;
+        exit(1);
     }
     void _initializeLayer(int numberOfNeurons, int layerIdx) {
         vector<Neuron> myVec;
@@ -189,16 +158,6 @@ private:
             };
         };
     };
-    void _initializeModel(vector<double> flattenedImage) {
-        if(flattenedImage.size() != neurons.at(0).size()) {
-            cerr << "FLATTENED IMAGE SIZE SHOULD BE EQUAL TO NUMBER OF NEURONS IN FIRST LAYER" << endl;
-            cerr << "SHAPES " << flattenedImage.size() << " AND " << neurons.at(0).size() << " DO NOT MATCH" << endl;
-            exit(1);
-            return;
-        }
-        for(int i=0; i<neurons.at(0).size(); i++)
-            neurons.at(0).at(i).setActivation(flattenedImage.at(i));
-    }
     static double _relu(double x) {
         if(x > 0)
             return x;
@@ -213,7 +172,7 @@ private:
         }
         
         vector<double> finalActivations = _softmax(lastActivations);
-        _printVector(finalActivations);
+        // _printVector(finalActivations);
         for(int i=0; i<finalActivations.size(); i++)
             neurons.at(indexOfLastLayer).at(i).setActivation(finalActivations.at(i));
     }
@@ -282,13 +241,147 @@ private:
         int n_neurons = int(neurons.at(layerIdx).size());
         if(n_neurons != W.size()) {
             cerr << "DIMENSION MISMATCH! N NEURONS DIFFERENT THAN WEIGHTS MATRIX" << endl;
-            cout << "N neurons = " << n_neurons << "\nW size = " << W.size() << endl;
+            cerr << "N neurons = " << n_neurons << "\nW size = " << W.size() << endl;
             exit(1);
         }
         for(int i=0; i<n_neurons; i++) {
             neurons.at(layerIdx).at(i).setWeights(W.at(i));
         }
     }
+    vector<int> _flatten(vector<vector<int>> image) {
+        vector<int> flattenedImage;
+        for(int i=0; i<image.size(); i++)
+            for(int j=0; j<image.at(i).size(); j++)
+                flattenedImage.push_back(image.at(i).at(j));
+        return flattenedImage;
+    }
+    vector<double> _normalize(vector<int> flattenedImage) {
+        vector<double> normalized;
+        for(int i=0; i<flattenedImage.size(); i++) {
+            normalized.push_back(double(flattenedImage.at(i))/255.0);
+        }
+        return normalized;
+    }
+    int _getArgmax() {
+        double maxActivation=-1, activation;
+        int argmax = 0;
+        int lastLayerIdx = int(neurons.size()-1);
+        for(int i=0; i<neurons.at(lastLayerIdx).size(); i++) {
+            activation = neurons.at(lastLayerIdx).at(i).getActivation();
+            if(activation > maxActivation) {
+                maxActivation = activation;
+                argmax = i;
+            };
+        };
+        return argmax;
+    }
+    vector<string> _loadWeightsFromFile(string path_str) {
+        const char* path = path_str.c_str();
+        // Open file from path
+        ifstream myFile(path);
+        
+        vector<string> fileAsString;
+        string line;
+        
+        if(myFile) {
+            while(true) {
+                myFile >> line;
+                if(myFile.eof())
+                    break;
+                fileAsString.push_back(line);
+            };
+        } else {
+            perror(path);
+        };
+        return fileAsString;
+    };
+    vector<int> _loadImageFromFile(string path_str) {
+        const char* path = path_str.c_str();
+        // Open file from path
+        ifstream myFile(path);
+        
+        vector<string> fileAsString;
+        vector<int> fileAsInt;
+        string line;
+        
+        if(myFile) {
+            while(true) {
+                myFile >> line;
+                if(myFile.eof())
+                    break;
+                fileAsString.push_back(line);
+            };
+        } else {
+            perror(path);
+        };
+        
+        for(int i=0; i<fileAsString.size(); i++) {
+            fileAsInt.push_back(stoi(fileAsString.at(i)));
+        };
+        
+        return fileAsInt;
+    };
+    
+    void _calcActivation(Neuron& myNeuron, function<double(double)> activationFunction) {
+        if(myNeuron.getLayerId() == 0) {
+            cerr << "ERROR DO NOT TRY TO CALC ACTIVATION OF NEURON IN FIRST LAYER" << endl;
+            exit(1);
+            return;
+        }
+        
+        // Our vectors
+        vector<double> weights;
+        vector<double> previousActivations;
+        int currentLayerId = myNeuron.getLayerId();
+        
+        weights = myNeuron.getConnectedWeights();
+        
+        // Let's loop through all neurons in the PREVIOUS layer
+        for(int i=0; i<neurons.at(currentLayerId-1).size(); i++) {
+            previousActivations.push_back(neurons.at(currentLayerId-1).at(i).getActivation());
+        }
+        
+        double z = _dot(weights, previousActivations);
+        
+        myNeuron.setActivation(z);
+    }
+    void _computeLayerActivation(int layerIdx, function<double(double)> activationFunction) {
+        for(int i=0; i<neurons.at(layerIdx).size(); i++)
+            _calcActivation(neurons.at(layerIdx).at(i), activationFunction);
+    };
+    void _initializeModel(vector<double> flattenedImage) {
+        if(flattenedImage.size() != neurons.at(0).size()) {
+            cerr << "FLATTENED IMAGE SIZE SHOULD BE EQUAL TO NUMBER OF NEURONS IN FIRST LAYER" << endl;
+            cerr << "SHAPES " << flattenedImage.size() << " AND " << neurons.at(0).size() << " DO NOT MATCH" << endl;
+            exit(1);
+            return;
+        }
+        for(int i=0; i<neurons.at(0).size(); i++)
+            neurons.at(0).at(i).setActivation(flattenedImage.at(i));
+    }
+    int _predict(vector<int> image) {
+        // Flatten image then normalize it
+        vector<double> normalized = _normalize(image);
+        
+        // Initialize model with image
+        _initializeModel(normalized);
+        
+        // Forward pass
+        for(int i=1; i<neurons.size()-1; i++) {
+            _computeLayerActivation(i, _relu);
+        }
+        
+        // Last layer activations
+        _computeLayerActivation(int(neurons.size()-1), _same);
+        
+        // Apply softmax
+        _computeLastLayer();
+        
+        // GET ARGMAX AND RETURN IT AS INTEGER ***************
+        return _getArgmax();
+    }
+    
+    
     
 public:
     NeuralNetwork(vector<int> neuronsPerLayer) {
@@ -340,24 +433,18 @@ public:
     };
     
     // ************************* PHASE 2 *************************
-    int predict(vector<vector<double>> image) {
-        vector<double> flattenedImage;
-        for(int i=0; i<image.size(); i++)
-            for(int j=0; j<image.at(i).size(); j++)
-                flattenedImage.push_back(image.at(i).at(j));
-        
-        _initializeModel(flattenedImage);
-        
-        for(int i=1; i<neurons.size()-1; i++) {
-            _computeLayerActivation(i, _relu);
-        }
-        _computeLayerActivation(int(neurons.size()-1), _same);
-        _computeLastLayer();
-        
-        // GET ARGMAX AND RETURN IT AS INTEGER ***************
-        
-        return 0;
+    int infer(string path) {
+        vector<int> image = _loadImageFromFile(path);
+        return _predict(image);
     }
+    
+    void printActivations(int layerIdx) {
+        for(int i=0; i<neurons.at(layerIdx).size(); i++) {
+            cout << neurons.at(layerIdx).at(i).getActivation() << " ";
+        }
+        cout << endl;
+    }
+    
     
     
     

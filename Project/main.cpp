@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include "../NeuralNetworkCppOnly.cpp"
+#include "../data.cpp"
 using namespace std;
 
 //void print(vector<string> fileAsString) {
@@ -56,10 +57,30 @@ int main(int argc, const char * argv[]) {
     myNetwork.loadPretrainedModel("Project/pretrainedModel/");
     
     // Verify the network
-    myNetwork.printNetwork("backward");
+    // myNetwork.printNetwork("backward");
     
+    Keys keys;
     // Predict image
-    // myNetwork.predict(image);
     
+    
+    
+    int predicted, sum, total_n=0, total_sum=0;
+    for(int j=0; j<10; j++) {
+        sum=0;
+        total_n += keys.get(j).size();
+        for(int i=0; i<keys.get(j).size(); i++) {
+            predicted = myNetwork.infer("Project/test_set/" + to_string(j) + "_img_" + to_string(keys.get(j).at(i)) + ".csv");
+            // cout << "The number is: " <<  predicted << endl; // << " i=" + to_string(keys.at(i)) << endl;
+            if(predicted == j) {
+                sum += 1;
+                total_sum += 1;
+            }
+        }
+        cout << "Accuracy classifying: " << to_string(j) << " is " + to_string(double(sum)/keys.get(j).size()*100) + "%" << endl;
+    }
+    cout << "Model finished inference with Accuracy = " + to_string(double(total_sum)/total_n*100) + "%" << endl;
+    
+    
+    // myNetwork.printActivations(1);
     return 1;
 }
