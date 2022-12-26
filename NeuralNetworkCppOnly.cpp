@@ -92,30 +92,7 @@ private:
     };
     vector<vector<Neuron>> neurons;
     
-    
-    double _dot(vector<double> weights, vector<double> activations) {
-        double activation = 0;
-        for(int i=0; i<weights.size(); i++)
-            activation += weights.at(i)*activations.at(i);
-        
-        return activation;
-    }
-//     vector<double> layerActivation(vector<Neuron> neurons) {
-//        for neuron in neurons:
-//            neuron.activation = getActivation(neuron)
-//    }
-//
-//    for i in range(4):
-//        layerActivation()
-    
-    bool _checkIfNeuronExists(int neuronId, int layerIdx) {
-        for(int i = 0; i<neurons.size(); i++)
-            if(neurons.at(layerIdx).at(i).getNeuronId() == neuronId)
-                return true;
-        
-        // If not found
-        return false;
-    }
+    // Neuron and layer handling
     Neuron _getNeuron(int neuronId, int layerIdx) {
         Neuron n;
         for (int i = 0; i < neurons.size(); i++) {
@@ -164,18 +141,6 @@ private:
         else
             return 0;
     }
-    void _computeLastLayer() {
-        vector<double> lastActivations;
-        int indexOfLastLayer = int(neurons.size()-1);
-        for(int i=0; i<neurons.at(indexOfLastLayer).size(); i++) {
-            lastActivations.push_back(neurons.at(indexOfLastLayer).at(i).getActivation());
-        }
-        
-        vector<double> finalActivations = _softmax(lastActivations);
-        // _printVector(finalActivations);
-        for(int i=0; i<finalActivations.size(); i++)
-            neurons.at(indexOfLastLayer).at(i).setActivation(finalActivations.at(i));
-    }
     vector<double> _softmax(vector<double> a) {
         double exp_sum = 0;
         for(int i=0; i<a.size(); i++) {
@@ -195,25 +160,15 @@ private:
     static double _same(double x) {
         return x;
     }
-    vector<string> _loadWeightsFromFile(const char* path) {
-        // Open file from path
-        ifstream myFile(path);
+    
+    // Weights handling
+    double _dot(vector<double> weights, vector<double> activations) {
+        double activation = 0;
+        for(int i=0; i<weights.size(); i++)
+            activation += weights.at(i)*activations.at(i);
         
-        vector<string> fileAsString;
-        string line;
-        
-        if(myFile) {
-            while(true) {
-                myFile >> line;
-                if(myFile.eof())
-                    break;
-                fileAsString.push_back(line);
-            };
-        } else {
-            perror(path);
-        };
-        return fileAsString;
-    };
+        return activation;
+    }
     vector<double> _strToDouble(vector<string> v) {
         vector<double> doubleVector(v.size());
         transform(v.begin(), v.end(), doubleVector.begin(), [] (const string& val) {
@@ -248,6 +203,8 @@ private:
             neurons.at(layerIdx).at(i).setWeights(W.at(i));
         }
     }
+    
+    // Activations handling
     vector<int> _flatten(vector<vector<int>> image) {
         vector<int> flattenedImage;
         for(int i=0; i<image.size(); i++)
@@ -275,8 +232,9 @@ private:
         };
         return argmax;
     }
-    vector<string> _loadWeightsFromFile(string path_str) {
-        const char* path = path_str.c_str();
+    
+    // File handling
+    vector<string> _loadWeightsFromFile(const char* path) {
         // Open file from path
         ifstream myFile(path);
         
@@ -294,6 +252,9 @@ private:
             perror(path);
         };
         return fileAsString;
+    };
+    vector<string> _loadWeightsFromFile(string path_str) {
+        return _loadWeightsFromFile(path_str.c_str());
     };
     vector<int> _loadImageFromFile(string path_str) {
         const char* path = path_str.c_str();
@@ -322,6 +283,19 @@ private:
         return fileAsInt;
     };
     
+    // Model handling
+    void _computeLastLayer() {
+        vector<double> lastActivations;
+        int indexOfLastLayer = int(neurons.size()-1);
+        for(int i=0; i<neurons.at(indexOfLastLayer).size(); i++) {
+            lastActivations.push_back(neurons.at(indexOfLastLayer).at(i).getActivation());
+        }
+        
+        vector<double> finalActivations = _softmax(lastActivations);
+        // _printVector(finalActivations);
+        for(int i=0; i<finalActivations.size(); i++)
+            neurons.at(indexOfLastLayer).at(i).setActivation(finalActivations.at(i));
+    };
     void _calcActivation(Neuron& myNeuron, function<double(double)> activationFunction) {
         if(myNeuron.getLayerId() == 0) {
             cerr << "ERROR DO NOT TRY TO CALC ACTIVATION OF NEURON IN FIRST LAYER" << endl;
@@ -437,22 +411,19 @@ public:
         vector<int> image = _loadImageFromFile(path);
         return _predict(image);
     }
-    
     void printActivations(int layerIdx) {
+        if(layerIdx >= neurons.size() or layerIdx < 0) {
+            cerr << "Layer ID invalid" << endl;
+            exit(1);
+        }
         for(int i=0; i<neurons.at(layerIdx).size(); i++) {
             cout << neurons.at(layerIdx).at(i).getActivation() << " ";
         }
         cout << endl;
     }
-    
-    
-    
-    
-    
     void loadPretrainedModel(string stringPath) {
         string path_temp;
         const char* path;
-        // getWeightsMatrix("Project/pretrainedModel/weights1.weights", NeuralNetworkParams.at(0));
         for(int i=1; i<neurons.size(); i++) {
             path_temp = stringPath + "weights" + to_string(i) + ".weights";
             path = path_temp.c_str();
@@ -461,5 +432,4 @@ public:
         }
         
     };
-    
 };
