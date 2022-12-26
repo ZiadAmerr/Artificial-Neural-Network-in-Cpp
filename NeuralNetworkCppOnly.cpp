@@ -68,7 +68,7 @@ private:
         void addBackwardArrow(int prevNeuronId) {
             backwardArrowList.push_back(Arrow(prevNeuronId, 0));
         }
-        void printArrowList(string direction="forward") {
+        void printArrowList() {
             cout << '[';
             for(auto it = backwardArrowList.begin(); it != backwardArrowList.end(); it++)
                 cout << "N#" << it->getNextNeuronId() << "(" << it->getWeight() <<"), ";
@@ -80,7 +80,6 @@ private:
         void setActivation(double activation) {
             this->activation = activation;
         }
-        // ********* UNFINISHED *********
         void setWeights(vector<double> weights) {
             if(weights.size() != backwardArrowList.size()) {
                 cerr << "CAN NOT USE WEIGHTS FOR NEURON, DIM MISMATCH.";
@@ -371,7 +370,7 @@ public:
         }
             
     }
-    void printNetwork(string detailed="none") {
+    void printNetwork(string direction="none") {
         Neuron n;
         for(int i=0; i<neurons.size(); i++) {
             cout << "Layer " << i << endl;
@@ -379,19 +378,14 @@ public:
                 n = neurons.at(i).at(j);
                 cout << "  ";
                 
-                if(detailed == "backward" and i != 0) {
-                    n.printArrowList("backward");
+                if(direction == "backward" and i != 0) {
+                    n.printArrowList();
                     cout << "-->";
                 };
                 
                 cout << "N#" << n.getNeuronId();
                 
-                
-                if(detailed == "forward") {
-                    cout << "-->";
-                    n.printArrowList("forward");
-                };
-                if(detailed == "backward") {
+                if(direction == "backward") {
                     if(i!=0) {
                         cout << endl;
                     }
