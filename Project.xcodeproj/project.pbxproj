@@ -7,10 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		995FFC892950FE31009D57AB /* NeuralNetworkCppOnly.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 995FFC882950FE31009D57AB /* NeuralNetworkCppOnly.cpp */; };
-		99A3B330293E03A40084A4C8 /* n.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99A3B32E293E03A40084A4C8 /* n.cpp */; };
+		995FFC892950FE31009D57AB /* NeuralNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 995FFC882950FE31009D57AB /* NeuralNetwork.cpp */; };
 		99B36FDD293C8D65003DF1FE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99B36FDC293C8D65003DF1FE /* main.cpp */; };
-		99B36FE7293C8DFE003DF1FE /* x.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99B36FE6293C8DFE003DF1FE /* x.cpp */; };
 		99CB10E82956080A00DC9CF1 /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CB10E72956080A00DC9CF1 /* data.cpp */; };
 /* End PBXBuildFile section */
 
@@ -27,12 +25,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		995FFC882950FE31009D57AB /* NeuralNetworkCppOnly.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeuralNetworkCppOnly.cpp; sourceTree = "<group>"; };
-		99A3B32E293E03A40084A4C8 /* n.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = n.cpp; sourceTree = "<group>"; };
-		99A3B32F293E03A40084A4C8 /* x.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = x.hpp; sourceTree = "<group>"; };
+		995FFC882950FE31009D57AB /* NeuralNetwork.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeuralNetwork.cpp; sourceTree = "<group>"; };
 		99B36FD9293C8D65003DF1FE /* Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Project; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B36FDC293C8D65003DF1FE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		99B36FE6293C8DFE003DF1FE /* x.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x.cpp; sourceTree = "<group>"; };
 		99CB10E1295249EF00DC9CF1 /* weights3.weights */ = {isa = PBXFileReference; lastKnownFileType = text; path = weights3.weights; sourceTree = "<group>"; };
 		99CB10E22953712000DC9CF1 /* weights2.weights */ = {isa = PBXFileReference; lastKnownFileType = text; path = weights2.weights; sourceTree = "<group>"; };
 		99CB10E32953731E00DC9CF1 /* weights1.weights */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = weights1.weights; sourceTree = "<group>"; };
@@ -55,10 +50,7 @@
 			isa = PBXGroup;
 			children = (
 				99CB10E72956080A00DC9CF1 /* data.cpp */,
-				99A3B32E293E03A40084A4C8 /* n.cpp */,
-				995FFC882950FE31009D57AB /* NeuralNetworkCppOnly.cpp */,
-				99A3B32F293E03A40084A4C8 /* x.hpp */,
-				99B36FE6293C8DFE003DF1FE /* x.cpp */,
+				995FFC882950FE31009D57AB /* NeuralNetwork.cpp */,
 				99B36FDB293C8D65003DF1FE /* Project */,
 				99B36FDA293C8D65003DF1FE /* Products */,
 			);
@@ -78,7 +70,6 @@
 				99CB10E62955FCE900DC9CF1 /* test_set */,
 				99CB10E4295377A900DC9CF1 /* pretrainedModel */,
 				99B36FDC293C8D65003DF1FE /* main.cpp */,
-				99CB10E52955FCDB00DC9CF1 /* New Group */,
 			);
 			path = Project;
 			sourceTree = "<group>";
@@ -91,13 +82,6 @@
 				99CB10E1295249EF00DC9CF1 /* weights3.weights */,
 			);
 			path = pretrainedModel;
-			sourceTree = "<group>";
-		};
-		99CB10E52955FCDB00DC9CF1 /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "New Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,10 +142,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				99B36FDD293C8D65003DF1FE /* main.cpp in Sources */,
-				99B36FE7293C8DFE003DF1FE /* x.cpp in Sources */,
-				99A3B330293E03A40084A4C8 /* n.cpp in Sources */,
 				99CB10E82956080A00DC9CF1 /* data.cpp in Sources */,
-				995FFC892950FE31009D57AB /* NeuralNetworkCppOnly.cpp in Sources */,
+				995FFC892950FE31009D57AB /* NeuralNetwork.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

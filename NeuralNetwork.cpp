@@ -113,17 +113,6 @@ private:
         neurons.push_back(myVec);
     }
     void _connectLayers(int currentLayerId) {
-//        // Loop through the current layers neurons
-//        for(int i=0; i<neurons.at(currentLayerId).size()-1; i++) {
-//
-//            // Connect each neuron with ALL the neurons in the NEXT layer
-//            for(int j=0; j<neurons.at(currentLayerId+1).size(); j++) {
-//
-//                // currentNeuron.addForwardArrow(otherNeuron.getId())
-//                neurons.at(currentLayerId).at(i).addForwardArrow(neurons.at(currentLayerId+1).at(j).getNeuronId());
-//            };
-//        };
-        
         for(int i=0; i<neurons.at(currentLayerId).size(); i++) {
         
             // Connect each neuron with ALL the neurons in the PREVIOUS layer
@@ -238,17 +227,18 @@ private:
         ifstream myFile(path);
         
         vector<string> fileAsString;
-        string line;
+        string word;
         
         if(myFile) {
             while(true) {
-                myFile >> line;
+                myFile >> word;
                 if(myFile.eof())
                     break;
-                fileAsString.push_back(line);
+                fileAsString.push_back(word);
             };
         } else {
             perror(path);
+            exit(1);
         };
         return fileAsString;
     };
@@ -256,25 +246,11 @@ private:
         return _loadWeightsFromFile(path_str.c_str());
     };
     vector<int> _loadImageFromFile(string path_str) {
-        const char* path = path_str.c_str();
         // Open file from path
-        ifstream myFile(path);
         
-        vector<string> fileAsString;
+        vector<string> fileAsString = _loadWeightsFromFile(path_str);
+        
         vector<int> fileAsInt;
-        string line;
-        
-        if(myFile) {
-            while(true) {
-                myFile >> line;
-                if(myFile.eof())
-                    break;
-                fileAsString.push_back(line);
-            };
-        } else {
-            perror(path);
-        };
-        
         for(int i=0; i<fileAsString.size(); i++) {
             fileAsInt.push_back(stoi(fileAsString.at(i)));
         };
@@ -295,7 +271,7 @@ private:
         for(int i=0; i<finalActivations.size(); i++)
             neurons.at(indexOfLastLayer).at(i).setActivation(finalActivations.at(i));
     };
-    void _calcActivation(Neuron& myNeuron, function<double(double)> activationFunction) {
+    void _calcActivation(Neuron &myNeuron, function<double(double)> activationFunction) {
         if(myNeuron.getLayerId() == 0) {
             cerr << "ERROR DO NOT TRY TO CALC ACTIVATION OF NEURON IN FIRST LAYER" << endl;
             exit(1);
@@ -316,7 +292,7 @@ private:
         
         double z = _dot(weights, previousActivations);
         
-        myNeuron.setActivation(z);
+        myNeuron.setActivation(activationFunction(z));
     }
     void _computeLayerActivation(int layerIdx, function<double(double)> activationFunction) {
         for(int i=0; i<neurons.at(layerIdx).size(); i++)
